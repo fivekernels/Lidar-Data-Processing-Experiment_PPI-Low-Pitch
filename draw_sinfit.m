@@ -1,6 +1,8 @@
+function struct_calVAD = draw_sinfit(struct_oriVAD)
+
 % angle_arr = 0:12:360;                % 扫描角度数组 正弦拟合横坐标
 count_angle = 65;
-angleValid_arr = 0:12:180;               % 扫描角度数组 正弦拟合横坐标
+% angleValid_arr = 0:12:180;               % 扫描角度数组 正弦拟合横坐标
 % count_angleValid = size(angleValid_arr, 2);
 count_angleValid = 65;
 count_time = size(struct_oriVAD, 2); % 数据组数(时间个数)
@@ -18,6 +20,14 @@ const_header_caldata_windspeed = 1;
 const_header_caldata_windAngle = 2;
 const_header_caldata_SNR = 3;
 % 计算结构体预分配
+field_time_ymd = 'time_ymd';
+field_time_hour = 'time_hour';
+field_time_minute = 'time_minute';
+field_time_second = 'time_second';
+field_pitch = 'pitch'; % 仰角 [0-360]
+field_azimuth = 'azimuth'; % 朝向
+field_windspeed = 'windspeed'; % 高度 \ [0-360]
+field_windSNR = 'windSNR'; % 高度 \ [0-360]
 struct_calVAD = struct( field_time_ymd, NaN, ...,
                      field_time_hour, NaN, ...,
                      field_time_minute, NaN, ...,
@@ -55,6 +65,10 @@ for index_time = 1:count_time
         times_drop = 0; % 删除次数
         while 1
             % scatter(axis_angle, axis_value);
+            if(sum(~isnan(windspeedOriValid_arr), 2)<3)
+                disp("err not enough valid point");
+                break;
+            end
             [fitresult, gof] = fit_a_Sind_x_c_d(angleValid_arr, windspeedOriValid_arr); % 拟合
             % 计算误差
             delta_sinfit = NaN(1, count_angleValid); %误差数组
@@ -109,14 +123,13 @@ for index_time = 1:count_time
 end % end index_time
 % 赋值时间
 for index_time = 1:count_time
-    index_time
     struct_calVAD(index_time).time_ymd = struct_oriVAD(index_time).time_ymd;
     struct_calVAD(index_time).time_hour = struct_oriVAD(index_time).time_hour;
     struct_calVAD(index_time).time_minute = struct_oriVAD(index_time).time_minute;
     struct_calVAD(index_time).time_second = struct_oriVAD(index_time).time_second;
 end
 
-
+end
 
 % % 连续时间同一高度
 % timeCount = size(struct_oriVAD, 2);

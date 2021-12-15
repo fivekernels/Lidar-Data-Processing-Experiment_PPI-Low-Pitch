@@ -1,10 +1,10 @@
-% function struct_oriVAD = func_read_VAD_ori(filename)
+function struct_oriVAD = func_read_VAD_ori(filename)
 
-clear variables;
+% clear variables;
 
-% if ( nargin < 1 )
+if ( nargin < 1 )
     filename = '.\csv-data\20210820\level0\CDL_3D10K_lidar_PPI_FromAzimuth0.00_ToAzimuth180.00_PitchAngle3.00_Resolution015_StartIndex005_LOSWind_20210820 000039.csv';
-% end
+end
 
 % 源数据列含义
 % const_header_oritext_datetime  = 1;
@@ -30,7 +30,7 @@ field_windspeed = 'windspeed'; % 高度 \ [0-360]
 field_windSNR = 'windSNR'; % 高度 \ [0-360]
 % 读数据
 % per_group_dir = (0:12:360);
-groupCount = 65;
+groupCount = 65; % 可以适当分配的稍大一点，剩余的为NaN，将来考虑将剩余的删除或不要以该配置作为强制分组依据
 % per_group_dir(groupCount) = 0;
 
 ori_csv_data = import_VAD_csv(filename);
@@ -115,5 +115,5 @@ while csvdataRow_Index <= rows_ori_csv % 行数
     j = j + 1;
 end
 struct_oriVAD = ori_struct;
-% end
+end
 
